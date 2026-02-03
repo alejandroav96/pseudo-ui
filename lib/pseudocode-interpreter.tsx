@@ -605,7 +605,9 @@ export class PseudocodeInterpreter {
       .replace(/redon\s*\(\s*(.+?)\s*\)/gi, 'Math.round($1)')
       .replace(/\^/g, '**')
       .replace(/mod/gi, '%')
-    
+      .replace(/\bVERDADERO\b/gi, 'true')
+      .replace(/\bFALSO\b/gi, 'false')
+
     try {
       // Safe evaluation
       const result = new Function(`return ${processedExpr}`)()
