@@ -147,9 +147,13 @@ export class PseudocodeInterpreter {
           if (this.inputCallback) {
             value = await this.inputCallback(`Ingrese valor para ${varName}:`)
           }
-          existingVar.value = existingVar.type === 'entero' || existingVar.type === 'real'
-            ? parseFloat(value) || 0
-            : value
+          if (existingVar.type === 'entero' || existingVar.type === 'real') {
+            existingVar.value = parseFloat(value) || 0
+          } else if (existingVar.type === 'logico') {
+            existingVar.value = /^\s*verdadero\s*$/i.test(value)
+          } else {
+            existingVar.value = value
+          }
           this.notifyVariableChange()
         }
         this.addFlowchartNode('input', `Leer ${match[1]}`)
