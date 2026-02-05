@@ -109,12 +109,15 @@ export class PseudocodeInterpreter {
     
     // Variable definition - support accented characters like ñ, á, é, etc.
     if (line.startsWith('definir')) {
-      const match = originalLine.match(/definir\s+([\w\u00C0-\u024F]+)\s+como\s+(\w+)/i)
+      const match = originalLine.match(/definir\s+(.+)\s+como\s+(\w+)/i)
       if (match) {
-        const [, name, type] = match
-        this.variables.set(name.toLowerCase(), { name, type: type.toLowerCase(), value: this.getDefaultValue(type) })
+        const [, namesStr, type] = match
+        const names = namesStr.split(',').map(n => n.trim().replace(/;$/, ''))
+        for (const name of names) {
+          this.variables.set(name.toLowerCase(), { name, type: type.toLowerCase(), value: this.getDefaultValue(type) })
+        }
         this.notifyVariableChange()
-        this.addFlowchartNode('process', `Definir ${name} como ${type}`)
+        this.addFlowchartNode('process', `Definir ${namesStr} como ${type}`)
       }
       return index + 1
     }
